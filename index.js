@@ -3,9 +3,8 @@ const express = require("express");
 const mailService = require("./src/mail");
 const app = express();
 
-cron.schedule("*/10 * * * *", function () {
-  console.log("---------------------");
-  console.log("running a task every 10 minute");
+cron.schedule("0 0 * * *", function () {
+  console.log("running a task every day");
   mailService.mailService();
 });
 
