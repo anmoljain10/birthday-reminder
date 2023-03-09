@@ -1,10 +1,12 @@
 <div class="container">
-  <form>
+  <form action="/save-reminder" method="POST">
     <h1>Enter Reminder Message</h1>
-    <input />
+    <input name="reminder" required="true" class="form-control" />
     <h2>Enter Description</h2>
-    <input />
+    <input name="description" required="true" class="form-control" />
     <h2>Select Date</h2>
-    <input type="date" />
+    <input name="date" type="date" required="true" class="form-control" />
+    <br />
+    <button type="submit">Set</button>
   </form>
 </div>

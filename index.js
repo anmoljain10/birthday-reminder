@@ -20,6 +20,8 @@ app.engine(
   })
 );
 app.set("view engine", "hbs");
+app.use(express.urlencoded({ extended: "false" }));
+app.use(express.json());
 
 app.listen(3000, () => {
   console.log("application listening.....");
@@ -27,4 +29,8 @@ app.listen(3000, () => {
 
 app.get("/", (req, res) => {
   res.render("main", { layout: "index" });
+});
+
+app.post("/save-reminder", (req, res) => {
+  console.log(req.body);
 });
