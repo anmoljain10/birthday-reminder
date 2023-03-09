@@ -1,13 +1,14 @@
 const nodemailer = require("nodemailer");
 const events = require("./constants/events");
+require("dotenv").config();
 
 module.exports = {
   mailService: function () {
     let mailTransporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE,
+      service: process.env.REMINDER_EMAIL_SERVICE,
       auth: {
-        user: process.env.SENDER_EMAIL,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.REMINDER_SENDER_EMAIL,
+        pass: process.env.REMINDER_EMAIL_PASS,
       },
     });
 
@@ -27,8 +28,8 @@ module.exports = {
 
       if (isSameDate) {
         let mailDetails = {
-          from: process.env.SENDER_EMAIL,
-          to: process.env.RECEIVER_EMAIL,
+          from: process.env.REMINDER_SENDER_EMAIL,
+          to: process.env.REMINDER_RECEIVER_EMAIL,
           subject: event.reminder,
           text: event.description,
         };
