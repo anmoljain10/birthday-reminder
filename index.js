@@ -1,6 +1,6 @@
 const cron = require("node-cron");
 const express = require("express");
-const mailService = require("./src/mail");
+const mailService = require("./services/mail");
 const handlebars = require("express-handlebars");
 const dbCalls = require("./db/main");
 const Router = require("./routes");
