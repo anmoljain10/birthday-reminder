@@ -1,8 +1,8 @@
 <div class="container py-5">
-  <h1>Add Reminder</h1>
+
   <div class="row">
     <div class="col-6">
-
+      <h1>Add Reminder</h1>
       <form action="/save-reminder" method="POST">
         <h4 class="pt-4"><label>Reminder Message</label>
         </h4>
@@ -31,6 +31,19 @@
         <br />
         <button class="btn btn-primary" type="submit">Set</button>
       </form>
+
+    </div>
+    <div class="col-6">
+      <h1>All Reminders</h1>
+      <ul>
+        {{#reminders}}
+          <li>
+            {{#each this}}
+              {{this.reminder}}
+            {{/each}}
+          </li>
+        {{/reminders}}
+      </ul>
     </div>
   </div>
 
