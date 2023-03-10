@@ -2,6 +2,21 @@ const mongoose = require("mongoose");
 const reminderModel = require("./schemas/reminder");
 require("dotenv").config();
 
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 async function connectDB() {
   await mongoose.connect(process.env.DB_CONNECT_URL, {
     useNewUrlParser: true,
@@ -16,7 +31,20 @@ async function connectDB() {
 async function getReminders() {
   try {
     const reminders = await reminderModel.find({});
-    return reminders;
+    let updatedReminders = reminders.map((reminder) => {
+      let fullDate = new Date(reminder.date);
+      let date = fullDate.getDate();
+      let month = fullDate.getMonth();
+      let year = fullDate.getFullYear();
+      return {
+        reminder: reminder.reminder,
+        description: reminder.description,
+        date: reminder.date,
+        displayDate: `${monthNames[month]} ${date}, ${year}`,
+      };
+    });
+    console.log(updatedReminders);
+    return updatedReminders;
   } catch (error) {
     throw error;
   }

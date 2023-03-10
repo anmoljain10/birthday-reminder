@@ -2,7 +2,7 @@
 
   <div class="row">
     <div class="col-6">
-      <h1>Add Reminder</h1>
+      <h1>Add Reminder 🔔</h1>
       <form action="/save-reminder" method="POST">
         <h4 class="pt-4"><label>Reminder Message</label>
         </h4>
@@ -14,12 +14,12 @@
         />
         <h4 class="pt-4"><label>Description</label>
         </h4>
-        <input
+        <textarea
           name="description"
           required="true"
           class="form-control"
           placeholder="Enter description"
-        />
+        ></textarea>
         <h4 class="pt-4"><label>Date</label>
         </h4>
         <input
@@ -29,20 +29,25 @@
           class="form-control w-25"
         />
         <br />
-        <button class="btn btn-primary" type="submit">Set</button>
+        <button class="btn btn-primary" type="submit">Set Reminder</button>
       </form>
 
     </div>
     <div class="col-6">
       <h1>All Reminders</h1>
-      <ul>
-        {{#reminders}}
-          <li>
-            {{#each this}}
-              {{this.reminder}}
-            {{/each}}
-          </li>
-        {{/reminders}}
+      <ul class="mt-5">
+
+        {{#each reminders}}
+          <div class="bd-highlight">
+            <h3 class="text-capitalize">{{reminder}}</h3>
+            <div class="fs-6">{{description}}</div>
+            <div
+              class="d-flex justify-content-end"
+              style="font-size:13px"
+            >{{displayDate}}</div>
+          </div>
+          <hr />
+        {{/each}}
       </ul>
     </div>
   </div>
