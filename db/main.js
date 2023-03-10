@@ -6,7 +6,7 @@ async function connectDB() {
   await mongoose.connect(process.env.DB_CONNECT_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    dbName: "event-reminder",
+    dbName: process.env.DB_NAME,
   });
   const db = mongoose.connection;
   db.on("error", (error) => console.log(error));
