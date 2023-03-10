@@ -2,6 +2,7 @@ const cron = require("node-cron");
 const express = require("express");
 const mailService = require("./src/mail");
 const handlebars = require("express-handlebars");
+const connectDB = require("./db/main");
 const app = express();
 
 cron.schedule("0 0 * * *", function () {
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: "false" }));
 app.use(express.json());
 
 app.listen(3000, () => {
+  connectDB();
   console.log("application listening.....");
 });
 
