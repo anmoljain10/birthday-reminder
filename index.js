@@ -3,6 +3,8 @@ const express = require("express");
 const mailService = require("./src/mail");
 const handlebars = require("express-handlebars");
 const connectDB = require("./db/main");
+const Router = require("./routes");
+
 const app = express();
 
 cron.schedule("0 0 * * *", function () {
@@ -24,15 +26,9 @@ app.set("view engine", "hbs");
 app.use(express.urlencoded({ extended: "false" }));
 app.use(express.json());
 
+app.use(Router);
+
 app.listen(3000, () => {
-  connectDB();
+  // connectDB();
   console.log("application listening.....");
-});
-
-app.get("/", (req, res) => {
-  res.render("main", { layout: "index" });
-});
-
-app.post("/save-reminder", (req, res) => {
-  console.log(req.body);
 });

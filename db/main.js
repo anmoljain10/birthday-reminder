@@ -1,9 +1,9 @@
-const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
+const reminderModel = require("./schemas/reminder");
 require("dotenv").config();
 
 async function connectDB() {
-  const uri = process.env.DB_CONNECT_URL;
-  const client = new MongoClient(uri, {
+  const client = mongoose.connect(process.env.DB_CONNECT_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -20,4 +20,14 @@ async function getReminders(client) {
   console.log(reminders);
 }
 
-module.exports = connectDB;
+async function saveReminder(reminderData) {
+  const reminder = new reminderModel(reminderData);
+  try {
+    await reminder.save();
+    return reminder;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = { connectDB, getReminders, saveReminder };
