@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const express = require("express");
 const mailService = require("./src/mail");
 const handlebars = require("express-handlebars");
-const connectDB = require("./db/main");
+const dbCalls = require("./db/main");
 const Router = require("./routes");
 
 const app = express();
@@ -29,6 +29,6 @@ app.use(express.json());
 app.use(Router);
 
 app.listen(3000, () => {
-  // connectDB();
+  dbCalls.connectDB();
   console.log("application listening.....");
 });

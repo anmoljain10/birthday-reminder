@@ -3,21 +3,23 @@ const reminderModel = require("./schemas/reminder");
 require("dotenv").config();
 
 async function connectDB() {
-  const client = mongoose.connect(process.env.DB_CONNECT_URL, {
+  await mongoose.connect(process.env.DB_CONNECT_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    dbName: "event-reminder",
   });
-  await client.connect();
-  return client;
+  const db = mongoose.connection;
+  db.on("error", (error) => console.log(error));
+  db.once("open", () => console.log("connection is open now"));
 }
 
-async function getReminders(client) {
-  const reminderCollection = await client
-    .db(process.env.DB_NAME)
-    .collection(process.env.DB_COLLECTION);
-  const reminders = await reminderCollection.find().stream();
-
-  console.log(reminders);
+async function getReminders() {
+  try {
+    const reminders = await reminderModel.find({});
+    return reminders;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function saveReminder(reminderData) {

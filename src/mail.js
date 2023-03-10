@@ -1,9 +1,9 @@
 const nodemailer = require("nodemailer");
-const events = require("./constants/events");
+const dbCalls = require("../db/main");
 require("dotenv").config();
 
 module.exports = {
-  mailService: function () {
+  mailService: async function () {
     let mailTransporter = nodemailer.createTransport({
       service: process.env.REMINDER_EMAIL_SERVICE,
       auth: {
@@ -16,6 +16,7 @@ module.exports = {
     const todayDate = today.getDate();
     const todayMonth = today.getMonth();
     const todayYear = today.getFullYear();
+    const events = await dbCalls.getReminders();
     events.forEach((event) => {
       const eventDate = new Date(event.date).getDate();
       const eventMonth = new Date(event.date).getMonth();
