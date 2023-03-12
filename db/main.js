@@ -36,7 +36,10 @@ async function getReminders() {
       let date = fullDate.getDate();
       let month = fullDate.getMonth();
       let year = fullDate.getFullYear();
+      // console.log(reminder, "value");
+      // console.log(ObjectId(reminder._id).valueOf, "<--id");
       return {
+        id: reminder._id,
         reminder: reminder.reminder,
         description: reminder.description,
         date: reminder.date,
@@ -60,4 +63,14 @@ async function saveReminder(reminderData) {
   }
 }
 
-module.exports = { connectDB, getReminders, saveReminder };
+async function deleteReminder(id) {
+  try {
+    const res = await reminderModel.deleteOne({ _id: id });
+    return true;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
+
+module.exports = { connectDB, getReminders, saveReminder, deleteReminder };

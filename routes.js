@@ -13,7 +13,9 @@ app.get("/", async (req, res) => {
 app.post("/save-reminder", async (req, res) => {
   try {
     const reminder = await dbCalls.saveReminder(req.body);
-    res.status(200).render("thank-you", { layout: "index", data: reminder });
+    res
+      .status(200)
+      .render("thank-you", { layout: "index", data: reminder, saved: true });
   } catch (e) {
     res.status(500).send(e);
   }
@@ -24,6 +26,19 @@ app.get("/reminders", async (req, res) => {
     const reminders = await dbCalls.getReminders();
     res.status(200).send(reminders);
   } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
+app.post("/delete-reminder", async (req, res) => {
+  const reminderId = req.body.id;
+  try {
+    await dbCalls.deleteReminder(reminderId);
+    res
+      .status(200)
+      .render("thank-you", { layout: "index", id: reminderId, deleted: true });
+  } catch (e) {
+    console.log(e, "error");
     res.status(500).send(e);
   }
 });
