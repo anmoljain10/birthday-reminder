@@ -7,7 +7,11 @@ app.get("/", async (req, res) => {
   try {
     reminders = await dbCalls.getReminders();
   } catch (e) {}
-  res.render("main", { layout: "index", reminders: reminders });
+  res.render("main", {
+    layout: "index",
+    reminders: reminders,
+    minDate: new Date().toISOString().split("T")[0], // minimum date that can be selected
+  });
 });
 
 app.post("/save-reminder", async (req, res) => {
