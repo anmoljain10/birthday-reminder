@@ -39,9 +39,9 @@ async function createUser(userDetails) {
   }
 }
 
-async function getReminders() {
+async function getReminders(email) {
   try {
-    const reminders = await reminderModel.find({});
+    const reminders = await reminderModel.find({ createdBy: email });
     let updatedReminders = reminders.map((reminder) => {
       let fullDate = new Date(reminder.date);
       let date = fullDate.getDate();

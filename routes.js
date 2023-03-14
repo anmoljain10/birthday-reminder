@@ -6,10 +6,9 @@ const connectEnsureLogin = require("connect-ensure-login");
 const User = require("./db/schemas/user");
 
 app.get("/", connectEnsureLogin.ensureLoggedIn("/signin"), async (req, res) => {
-  console.log(req, "req");
   let reminders = [];
   try {
-    reminders = await dbCalls.getReminders();
+    reminders = await dbCalls.getReminders(req.user.email);
   } catch (e) {}
   res.render("main", {
     layout: "index",
@@ -18,20 +17,27 @@ app.get("/", connectEnsureLogin.ensureLoggedIn("/signin"), async (req, res) => {
   });
 });
 
-app.post("/save-reminder", async (req, res) => {
-  try {
-    const reminder = await dbCalls.saveReminder(req.body);
-    res
-      .status(200)
-      .render("thank-you", { layout: "index", data: reminder, saved: true });
-  } catch (e) {
-    res.status(500).send(e);
+app.post(
+  "/save-reminder",
+  connectEnsureLogin.ensureLoggedIn("/signin"),
+  async (req, res) => {
+    try {
+      const reminder = await dbCalls.saveReminder({
+        ...req.body,
+        createdBy: req.user.email,
+      });
+      res
+        .status(200)
+        .render("thank-you", { layout: "index", data: reminder, saved: true });
+    } catch (e) {
+      res.status(500).send(e);
+    }
   }
-});
+);
 
 app.get("/reminders", async (req, res) => {
   try {
-    const reminders = await dbCalls.getReminders();
+    const reminders = await dbCalls.getReminders(req.user.email);
     res.status(200).send(reminders);
   } catch (e) {
     res.status(500).send(e);

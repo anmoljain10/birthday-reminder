@@ -8,7 +8,6 @@ const passport = require("passport");
 const session = require("express-session"); // session middleware
 const User = require("./db/schemas/user");
 const bodyParser = require("body-parser"); // parser middleware
-const connectEnsureLogin = require("connect-ensure-login"); // authorization
 
 const app = express();
 
@@ -36,7 +35,7 @@ app.use(
     secret: "r8q,+&1LM3)CD*zAGpx1xm{NeQhc;#",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60 * 1000 }, // 1 hour
+    cookie: { maxAge: 60 * 1000 * 60 }, // 1 hour
   })
 );
 
