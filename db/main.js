@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const reminderModel = require("./schemas/reminder");
+const userModel = require("./schemas/user");
 require("dotenv").config();
 
 const monthNames = [
@@ -24,8 +25,18 @@ async function connectDB() {
     dbName: process.env.DB_NAME,
   });
   const db = mongoose.connection;
-  db.on("error", (error) => console.log(error));
+  db.on("error", (error) => console.log(error, "error connecting"));
   db.once("open", () => console.log("connection is open now"));
+}
+
+async function createUser(userDetails) {
+  try {
+    const user = new userModel({ ...userDetails, _id: userDetails.email });
+    await user.save();
+    return user;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function getReminders() {
@@ -36,8 +47,7 @@ async function getReminders() {
       let date = fullDate.getDate();
       let month = fullDate.getMonth();
       let year = fullDate.getFullYear();
-      // console.log(reminder, "value");
-      // console.log(ObjectId(reminder._id).valueOf, "<--id");
+
       return {
         id: reminder._id,
         reminder: reminder.reminder,
@@ -73,4 +83,10 @@ async function deleteReminder(id) {
   }
 }
 
-module.exports = { connectDB, getReminders, saveReminder, deleteReminder };
+module.exports = {
+  connectDB,
+  getReminders,
+  saveReminder,
+  deleteReminder,
+  createUser,
+};

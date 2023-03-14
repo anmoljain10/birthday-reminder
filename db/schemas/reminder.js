@@ -8,9 +8,14 @@ const ReminderSchema = new mongoose.Schema(
     },
     description: {
       type: String,
+      required: true,
     },
     date: {
       type: Date,
+    },
+    createdBy: {
+      type: String,
+      required: true,
     },
   },
   { collection: "reminders" }

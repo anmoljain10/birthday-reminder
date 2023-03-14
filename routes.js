@@ -47,4 +47,17 @@ app.post("/delete-reminder", async (req, res) => {
   }
 });
 
+app.get("/signup", (req, res) => {
+  res.render("signup", { layout: "index" });
+});
+
+app.post("/register", async (req, res) => {
+  try {
+    await dbCalls.createUser(req.body);
+    res.redirect("/");
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
 module.exports = app;
