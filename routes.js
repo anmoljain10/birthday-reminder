@@ -1,8 +1,12 @@
 const express = require("express");
 const dbCalls = require("./db/main");
+const passport = require("passport");
 const app = express();
+const connectEnsureLogin = require("connect-ensure-login");
+const User = require("./db/schemas/user");
 
-app.get("/", async (req, res) => {
+app.get("/", connectEnsureLogin.ensureLoggedIn("/signin"), async (req, res) => {
+  console.log(req, "req");
   let reminders = [];
   try {
     reminders = await dbCalls.getReminders();
@@ -51,13 +55,44 @@ app.get("/signup", (req, res) => {
   res.render("signup", { layout: "index" });
 });
 
+app.get("/signin", (req, res) => {
+  res.render("login", { layout: "index" });
+});
+
 app.post("/register", async (req, res) => {
   try {
-    await dbCalls.createUser(req.body);
-    res.redirect("/");
+    await User.register(
+      { email: req.body.email, name: req.body.name, _id: req.body.email },
+      req.body.password,
+      async function (err, user) {
+        if (err) {
+          console.log(err, "error");
+        }
+        if (user) {
+          console.log(user);
+          const response = await User.authenticate()(
+            req.body.email,
+            req.body.password
+          );
+          if (reponse.user) {
+            res.redirect("/");
+          }
+        }
+      }
+    );
   } catch (e) {
+    console.log(e, "er");
     res.status(500).send(e);
   }
 });
+
+app.post(
+  "/login",
+  passport.authenticate("local", { failureRedirect: "/signin" }),
+  function (req, res) {
+    console.log(req.user, "--logged in user!");
+    res.redirect("/");
+  }
+);
 
 module.exports = app;
