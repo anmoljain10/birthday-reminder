@@ -17,7 +17,7 @@ module.exports = {
       const todayDate = today.getDate();
       const todayMonth = today.getMonth();
       const todayYear = today.getFullYear();
-      const events = await dbCalls.getReminders();
+      const events = await dbCalls.getReminders("all");
       events.forEach((event) => {
         const eventDate = new Date(event.date).getDate();
         const eventMonth = new Date(event.date).getMonth();
@@ -31,7 +31,7 @@ module.exports = {
         if (isSameDate) {
           let mailDetails = {
             from: process.env.REMINDER_SENDER_EMAIL,
-            to: process.env.REMINDER_RECEIVER_EMAIL,
+            to: event.createdBy,
             subject: event.reminder,
             text: event.description,
           };
