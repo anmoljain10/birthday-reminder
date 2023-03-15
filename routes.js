@@ -62,7 +62,11 @@ app.get("/signup", (req, res) => {
 });
 
 app.get("/signin", (req, res) => {
-  res.render("login", { layout: "index" });
+  if (req.user) {
+    res.redirect("/");
+  } else {
+    res.render("login", { layout: "index" });
+  }
 });
 
 app.post("/register", async (req, res) => {
@@ -100,5 +104,12 @@ app.post(
     res.redirect("/");
   }
 );
+
+app.post("/logout", (req, res) => {
+  req.logout(function (err, data) {
+    console.log(err, data);
+    res.redirect("/signin");
+  });
+});
 
 module.exports = app;
