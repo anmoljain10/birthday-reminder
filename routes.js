@@ -4,6 +4,9 @@ const passport = require("passport");
 const app = express();
 const connectEnsureLogin = require("connect-ensure-login");
 const User = require("./db/schemas/user");
+const httpStatusCodes = require("http-status-codes");
+
+const { StatusCodes } = httpStatusCodes;
 
 app.get("/", connectEnsureLogin.ensureLoggedIn("/signin"), async (req, res) => {
   let reminders = [];
@@ -27,10 +30,10 @@ app.post(
         createdBy: req.user.email,
       });
       res
-        .status(200)
+        .status(StatusCodes.OK)
         .render("thank-you", { layout: "index", data: reminder, saved: true });
     } catch (e) {
-      res.status(500).send(e);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
     }
   }
 );
@@ -38,9 +41,9 @@ app.post(
 app.get("/reminders", async (req, res) => {
   try {
     const reminders = await dbCalls.getReminders(req.user.email);
-    res.status(200).send(reminders);
+    res.status(StatusCodes.OK).send(reminders);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 });
 
@@ -49,11 +52,10 @@ app.post("/delete-reminder", async (req, res) => {
   try {
     await dbCalls.deleteReminder(reminderId);
     res
-      .status(200)
+      .status(StatusCodes.OK)
       .render("thank-you", { layout: "index", id: reminderId, deleted: true });
   } catch (e) {
-    console.log(e, "error");
-    res.status(500).send(e);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 });
 
@@ -71,19 +73,18 @@ app.get("/signin", (req, res) => {
 
 app.post("/register", async (req, res) => {
   try {
-    await User.register(
+    User.register(
       { email: req.body.email, name: req.body.name, _id: req.body.email },
       req.body.password,
       async function (err, user) {
         if (err) {
-          console.log(err, "error");
+          console.log(err.name, "error");
+          if (err.name === "UserExistsError") {
+            res.status(StatusCodes.CONFLICT).send(err.message);
+          }
         }
         if (user) {
-          console.log(user);
-          const response = await User.authenticate()(
-            req.body.email,
-            req.body.password
-          );
+          await User.authenticate()(req.body.email, req.body.password);
           if (reponse.user) {
             res.redirect("/");
           }
@@ -91,23 +92,16 @@ app.post("/register", async (req, res) => {
       }
     );
   } catch (e) {
-    console.log(e, "er");
-    res.status(500).send(e);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 });
 
-app.post(
-  "/login",
-  passport.authenticate("local", { failureRedirect: "/signin" }),
-  function (req, res) {
-    console.log(req.user, "--logged in user!");
-    res.redirect("/");
-  }
-);
+app.post("/login", passport.authenticate("local"), function (req, res) {
+  res.redirect("/");
+});
 
 app.post("/logout", (req, res) => {
   req.logout(function (err, data) {
-    console.log(err, data);
     res.redirect("/signin");
   });
 });

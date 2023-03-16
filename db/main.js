@@ -82,7 +82,6 @@ async function deleteReminder(id) {
     const res = await reminderModel.deleteOne({ _id: id });
     return true;
   } catch (e) {
-    console.log(e);
     throw e;
   }
 }
